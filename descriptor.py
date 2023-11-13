@@ -3,6 +3,8 @@ from PyQt5.QtCore import (Qt, pyqtSignal, QRect, QVariantAnimation,QEasingCurve,
                         QPropertyAnimation, pyqtProperty)
 from PyQt5.QtGui import   QPainter ,QPixmap, QImage, QColor, QPen, QCursor, QTextCharFormat, QTextCursor, QIcon
 from rent_zones import rent_zones, rent_zones_bone_loc
+from pushbutton import PushButton
+from artic import Artic
 
 class Descriptor(QWidget):
     
@@ -117,8 +119,9 @@ class Descriptor(QWidget):
         self.scroll_body = QScrollArea()
         self.scroll_body.setWidgetResizable(True)
         self.scroll_body.setWidget(self.body_widget)
+        self.scroll_body.hide()
         #self.body_layout.addWidget(self.scroll_body)
-
+         
 
         self.main_layout = QVBoxLayout()
         self.main_layout.addLayout(self.head_layout)
@@ -157,12 +160,20 @@ class Descriptor(QWidget):
         print("localization", rent_zones_bone_loc[action.text()][1])
         print("segments", rent_zones_bone_loc[action.text()][2])
         
-        #self.button_joint = QPushButton("joints")
-        #self.button_joint.setStyleSheet(self.button_style) 
-        #self.body.addWidget(self.button_joint)
+        for i in rent_zones_bone_loc[action.text()][0]:
+            self.button_joint = PushButton("Описание "+i)
+            self.button_joint.name = i
+            self.button_joint.setStyleSheet(self.button_style) 
+            self.button_joint.color = "#adff2f"
+            self.button_joint.clicked.connect(self.artic_description)
+            self.body.addWidget(self.button_joint)
+        self.body.addStretch()
         #.setStyleSheet(self.button_style)
         #for i in rent_zones_bone_loc[action.text()]:
-                        
+        self.scroll_body.show()
+        
+
+
         initial_rect = self.scroll_body.geometry()
         final_rect = QRect(self.scroll_body.x(),self.scroll_body.y(),1,1)
         
@@ -171,8 +182,8 @@ class Descriptor(QWidget):
         print("final_rect=%s" % final_rect)
 
         self.combo_animation = QPropertyAnimation(self.scroll_body, b'geometry')
-        self.combo_animation.setEasingCurve(QEasingCurve.InOutSine)
-        self.combo_animation.setDuration(500)
+        self.combo_animation.setEasingCurve(QEasingCurve.InOutQuad)
+        self.combo_animation.setDuration(600)
         self.combo_animation.setStartValue(initial_rect)
         self.combo_animation.setEndValue(final_rect)
         
@@ -185,6 +196,8 @@ class Descriptor(QWidget):
 
 
     def artic_description(self):
+        print(self.sender().name)
+
         pass
 
     def fracture_description(self):
