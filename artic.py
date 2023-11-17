@@ -7,13 +7,33 @@ from rent_zones import rent_zones, rent_zones_bone_loc
 class Artic(QWidget):
     
 
-    def __init__(self, names, **kwargs):
+    def __init__(self, button_triggered, **kwargs):
         super().__init__( **kwargs)
-        
-        self.initUI()
+        self.setStyleSheet('''
+                                background-color: white;
+                                color: black;
+                                padding: 6px 12px;
+                                text-align: center;
+                                text-decoration: none;
+                                font-size: 12px;
+                                border-radius: 8px;
+                                margin: 4px 2px;
+                                border: 2px solid #adff2f;
+                            }'''
+            )
+        self.button_triggered = button_triggered
+        self.name = self.button_triggered.name
+        self.initUi()
 
     def initUi(self):
-        pass
+        self.label_name = QLabel(self.name)
+        self.main_layout = QVBoxLayout()
+        self.main_layout.addWidget(self.label_name)
+        self.setLayout(self.main_layout)
+    
+    def button_triggered(self):
+        return self.button_triggered
+
 
 
 """

@@ -57,6 +57,8 @@ class Descriptor(QWidget):
                 color: black;
             } 
             '''
+        self.joints_described = []
+
         self.initUI()
 
     def initUI(self):
@@ -148,6 +150,21 @@ class Descriptor(QWidget):
     
     
     def localization_action(self, action):
+        
+        self.joints_described = []
+        print("виджеты в body", self.body.count())
+        
+
+        #if isinstance(widget, QtGui.QPushButton)
+        #.deleteLater()
+
+        for i in reversed(range(self.body.count())):
+            print("removing....", self.body.itemAt(i), "....")
+            if self.body.itemAt(i).widget() != None: 
+                self.body.itemAt(i).widget().deleteLater()
+            else:
+                self.body.removeItem(self.body.itemAt(i))
+
         self.localiz_menu_button.setText(action.text())
         index = rent_zones.index(action.text())
         if index>10:
@@ -157,31 +174,49 @@ class Descriptor(QWidget):
         #print(rent_zones.index(action.text()))
         #print(rent_zones_bone_loc[action.text()])
         print("joints", rent_zones_bone_loc[action.text()][0])
-        print("localization", rent_zones_bone_loc[action.text()][1])
+        #print("localization", rent_zones_bone_loc[action.text()][1])
         print("segments", rent_zones_bone_loc[action.text()][2])
         
-        for i in rent_zones_bone_loc[action.text()][0]:
-            self.button_joint = PushButton("Описание "+i)
-            self.button_joint.name = i
-            self.button_joint.setStyleSheet(self.button_style) 
-            self.button_joint.color = "#adff2f"
-            self.button_joint.clicked.connect(self.artic_description)
-            self.body.addWidget(self.button_joint)
-        self.body.addStretch()
-        #.setStyleSheet(self.button_style)
-        #for i in rent_zones_bone_loc[action.text()]:
-        self.scroll_body.show()
+
+
+
+        if len(rent_zones_bone_loc[action.text()][0])>0:
+            for i in rent_zones_bone_loc[action.text()][0]:
+                self.button_joint = PushButton("Описание "+i)
+                self.button_joint.name = i
+                self.button_joint.setStyleSheet(self.button_style) 
+                self.button_joint.color = "#adff2f"
+                self.button_joint.clicked.connect(self.artic_description)
+                self.joints_described.append([self.button_joint])
+                self.body.addWidget(self.button_joint)
+            self.body.addStretch()
+            #.setStyleSheet(self.button_style)
+            #for i in rent_zones_bone_loc[action.text()]:
+            self.scroll_body.show()
         
 
 
-        initial_rect = self.scroll_body.geometry()
-        final_rect = QRect(self.scroll_body.x(),self.scroll_body.y(),1,1)
         
+        self.animation(self.scroll_body)
         
-        print("initial_rect=%s" % initial_rect)
-        print("final_rect=%s" % final_rect)
 
-        self.combo_animation = QPropertyAnimation(self.scroll_body, b'geometry')
+        #self.combo_animation.setDirection(QAbstractAnimation.Backward)
+        #self.combo_animation.start()
+        print("виджеты в body", self.body.count())
+        self.body.update()
+        self.scroll_body.update()
+
+    def animation (self, widget):
+        
+        widget.show()
+        initial_rect = widget.geometry()
+        final_rect = QRect(widget.x(),widget.y(),1,1)
+        
+        
+        #print("initial_rect=%s" % initial_rect)
+        #print("final_rect=%s" % final_rect)
+
+        self.combo_animation = QPropertyAnimation(widget, b'geometry')
         self.combo_animation.setEasingCurve(QEasingCurve.InOutQuad)
         self.combo_animation.setDuration(600)
         self.combo_animation.setStartValue(initial_rect)
@@ -189,16 +224,61 @@ class Descriptor(QWidget):
         
         self.combo_animation.setDirection(QAbstractAnimation.Backward)
         self.combo_animation.start()
-        
 
-        #self.combo_animation.setDirection(QAbstractAnimation.Backward)
-        #self.combo_animation.start()
 
 
     def artic_description(self):
-        print(self.sender().name)
+        #print(self.sender().name)
+        
 
-        pass
+
+        self.artic = Artic(button_triggered=self.sender())
+        index = 0
+        for art in self.joints_described:
+            #print(art[0])
+            #print(self.sender())
+            if art[0] == self.sender():
+                button_index = index
+                #print(len(self.joints_described[index]))
+                if len(self.joints_described[index])==1:
+                    self.joints_described[index].append(self.artic)
+                    
+            index+=1
+        
+        #self.body.replaceWidget(self.sender(), self.artic)
+        #self.sender().hide()
+        #self.body.replaceWidget(self.sender(), self.artic)
+        #self.artic.show()
+
+        #self.body.replaceWidget(self.sender(),self.joints_described[index][-1])
+        #self.joints_described[index][-1].show()
+
+        for i in reversed(range(self.body.count())):
+            print("removing....", self.body.itemAt(i), "....")
+            if self.body.itemAt(i).widget() != None: 
+                self.body.itemAt(i).widget().hide()
+            else:
+                self.body.removeItem(self.body.itemAt(i))
+            
+            
+
+        #self.body.insertWidget(button_index, self.artic)
+        for art in self.joints_described:
+            if art[0] == self.sender() and len(art)>0:
+                self.body.addWidget(art[-1])
+                print("animate", art[-1])
+                
+                self.animation(art[-1])     #.show()
+                
+            else:
+                self.body.addWidget(art[0])
+                print("animate", art[0])
+                
+                self.animation(art[0]) #.show()
+                
+        self.body.addStretch()
+
+        print(self.joints_described)
 
     def fracture_description(self):
         pass

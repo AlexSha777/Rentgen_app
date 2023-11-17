@@ -68,7 +68,7 @@ rent_zones_bone_loc = {
 "крестцового отдела позвоночника": [sacral_coc_artic, sacral_coc, [] ],
 
 "грудной клетки": [[],thorax,[]],
-"грудины": [[],thorax,[]],
+"грудины": [[up_extr_artic[0]],thorax,[]],
 "брюшной полости": [[],abdominal_cavity,[]],
 "таза": [pelvis_artic, pelvis, []],
 
