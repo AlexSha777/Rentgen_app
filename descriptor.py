@@ -242,6 +242,7 @@ class Descriptor(QWidget):
                 #print(len(self.joints_described[index]))
                 if len(self.joints_described[index])==1:
                     self.joints_described[index].append(self.artic)
+                    self.body.addWidget(self.artic)
                     
             index+=1
         
@@ -256,7 +257,11 @@ class Descriptor(QWidget):
         for i in reversed(range(self.body.count())):
             print("removing....", self.body.itemAt(i), "....")
             if self.body.itemAt(i).widget() != None: 
+                #self.body.itemAt(i).widget().hide()
+                
                 self.body.itemAt(i).widget().hide()
+                self.body.removeItem(self.body.itemAt(i))
+
             else:
                 self.body.removeItem(self.body.itemAt(i))
             
@@ -266,18 +271,18 @@ class Descriptor(QWidget):
         for art in self.joints_described:
             if art[0] == self.sender() and len(art)>0:
                 self.body.addWidget(art[-1])
-                print("animate", art[-1])
+                art[-1].show()
                 
-                self.animation(art[-1])     #.show()
                 
             else:
                 self.body.addWidget(art[0])
-                print("animate", art[0])
-                
-                self.animation(art[0]) #.show()
+                art[0].show()
+               
                 
         self.body.addStretch()
+        
 
+        print("widgets in self.body ", self.body.count())
         print(self.joints_described)
 
     def fracture_description(self):

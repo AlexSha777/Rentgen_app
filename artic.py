@@ -1,38 +1,134 @@
 from PyQt5.QtWidgets import QLabel, QLineEdit, QWidget, QScrollArea, QTextEdit, QPushButton, QMenu, QHBoxLayout, QVBoxLayout
-from PyQt5.QtCore import (Qt, pyqtSignal, QRect, QVariantAnimation,QEasingCurve, QAbstractAnimation, 
+from PyQt5.QtCore import (Qt, pyqtSignal, QRect, QRectF, QVariantAnimation,QEasingCurve, QAbstractAnimation, 
                         QPropertyAnimation, pyqtProperty)
-from PyQt5.QtGui import   QPainter ,QPixmap, QImage, QColor, QPen, QCursor, QTextCharFormat, QTextCursor, QIcon
+from PyQt5.QtGui import   QPainter ,QPixmap, QImage, QColor, QPen, QBrush, QCursor, QTextCharFormat, QTextCursor, QIcon
 from rent_zones import rent_zones, rent_zones_bone_loc
+from pushbutton import PushButton
 
 class Artic(QWidget):
     
 
     def __init__(self, button_triggered, **kwargs):
         super().__init__( **kwargs)
-        self.setStyleSheet('''
-                                background-color: white;
-                                color: black;
-                                padding: 6px 12px;
-                                text-align: center;
-                                text-decoration: none;
-                                font-size: 12px;
-                                border-radius: 8px;
-                                margin: 4px 2px;
-                                border: 2px solid #adff2f;
-                            }'''
-            )
+        self.setStyleSheet('''font-size: 12px;''')
+
+        self.button_style = '''
+            QPushButton{
+                background-color: white;
+                border: none;
+                color: black;
+                padding: 6px 12px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 12px;
+                border-radius: 8px;
+                margin: 4px 2px;
+                border: 2px solid #A66100;
+            }
+            '''
+
+        self.line_edit_style = '''
+            QLineEdit{
+                background-color: white;
+                border: none;
+                color: black;
+                padding: 6px 12px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 12px;
+                border-radius: 8px;
+                margin: 4px 2px;
+                border: 2px solid #A66100;
+            }
+            '''
+
+        self.menu_style = '''
+            QMenu{
+                background-color: white;
+                margin: 2px;
+                color: black;
+            }
+            QMenu::item {
+                padding: 2px 25px 2px 20px;
+                border: 1px solid transparent;
+            }
+            QMenu::item:selected{
+                background-color: #A66100;
+                color: black;
+            } 
+            '''
         self.button_triggered = button_triggered
-        self.name = self.button_triggered.name
+        self.name = "Описание " + self.button_triggered.name
         self.initUi()
 
     def initUi(self):
         self.label_name = QLabel(self.name)
+        
+        self.button_collapse = PushButton("Свернуть")
+        self.button_collapse.color = "#f0f0f0"
+
+
+        #  конгруэнтность суставных поверхностей +- частично
+        congr_layout = QHBoxLayout()
+        self.label_congr = QLabel("Конгруэтность суставных поверхностей")
+        self.congruent = QPushButton("...")
+        self.congruent.setStyleSheet(self.button_style)
+        congruent_menu = QMenu(self)
+        self.create_menu(["конгруэнтны", "не конгруэнтны", "частично конгруэнтны"], congruent_menu)
+        self.congruent.setMenu(congruent_menu)
+        congruent_menu.triggered.connect(lambda action:self.congruent.setText(action.text()))
+        congr_layout.addWidget(self.label_congr)
+        congr_layout.addWidget(self.congruent)
+        
+        
         self.main_layout = QVBoxLayout()
         self.main_layout.addWidget(self.label_name)
+        self.main_layout.addLayout(congr_layout)
+        
         self.setLayout(self.main_layout)
-    
+
+
     def button_triggered(self):
         return self.button_triggered
+
+    
+
+    def create_menu(self, d, menu):
+        if isinstance(d, list):
+            for e in d:
+                self.create_menu(e, menu)
+        elif isinstance(d, dict):
+            for k, v in d.items():
+                sub_menu = QMenu(k, menu)
+                menu.addMenu(sub_menu)
+                self.create_menu(v, sub_menu)
+        else:
+            action = menu.addAction(d)
+            action.setIconVisibleInMenu(False)
+    
+
+    def paintEvent(self, e):
+
+        qp = QPainter()
+        qp.begin(self)
+        self.drawOutLines(qp)
+        qp.end()
+
+
+    def drawOutLines(self, qp):
+        widget_rect = QRectF(0,0, self.width(), self.height())
+        color_frame = QColor(173, 255, 47, 255)
+        color_inner = QColor(233, 255, 198, 255)
+        
+        brush = QBrush(color_inner, Qt.SolidPattern)
+        qp.setBrush(brush)
+        qp.drawRoundedRect(widget_rect, 16, 17)
+
+        pen = QPen(color_frame, 5, Qt.SolidLine)
+        qp.setPen(pen)
+        qp.drawRoundedRect(widget_rect, 16, 17)
+        
+        #qp.drawLine(20, 40, 250, 40)
 
 
 
