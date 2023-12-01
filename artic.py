@@ -79,7 +79,53 @@ class Artic(QWidget):
         congruent_menu.triggered.connect(lambda action:self.congruent.setText(action.text()))
         congr_layout.addWidget(self.label_congr)
         congr_layout.addWidget(self.congruent)
+
+        #сужение суставной щели (степень сужение - легкое/сомнительное, умеренное, выраженное, резкое) 
+        #                        равномерно/неравномерно по внутрен нар передн задней поверхности
+        joint_space_layout = QHBoxLayout()
         
+        label_equability = QLabel("Равномерность щели сустава")
+        self.equability = QPushButton("...")
+        self.equability.setStyleSheet(self.button_style)
+        equability_menu = QMenu(self)
+        self.create_menu(["равномерна", "неравномерна"], equability_menu)
+        self.equability.setMenu(congruent_menu)
+        equability_menu.triggered.connect(lambda action:self.equability.setText(action.text()))
+
+
+        label_narrowing =  QLabel("Сужение щели сустава")
+        self.narrowing = QPushButton("...")
+        self.narrowing.setStyleSheet(self.button_style)
+        narrowing_menu = QMenu(self)
+        self.create_menu(["легкое(сомнительное)", "умеренное", "выраженное", "резкое"], narrowing_menu)
+        self.narrowing.setMenu(congruent_menu)
+        narrowing_menu.triggered.connect(lambda action:self.narrowing.setText(action.text()))
+        joint_space_layout.addWidget(label_narrowing)
+        
+        joint_space_layout.addWidget(self.narrowing)
+        joint_space_layout.addWidget(label_equability)
+        joint_space_layout.addWidget(self.equability)
+
+
+
+        #субхондральные изменения (субхондрального слоя) (нормальная, остеопороз, остеосклероз, деструкция, дефекты суставных 
+        #                                         поверхностей, секвестрация, кистовидная перестройка (количество, 
+        #                                         величина), неровный контур, дефигурация - уплощение суставной поверхности).
+        
+        #краевые разрастания суставных поверхностей +- их размеры
+        
+        #очаги остеосклероза +-
+        
+        #очаги остеопороза +-
+        
+        #свободный костные фрагменты +-
+
+        #зоны роста +- /закрыта частично/полностью
+        
+        #ядра окостенения у молодых людей (соответствие возрасту, положение, форма и величина)
+
+
+
         
         self.main_layout = QVBoxLayout()
         self.main_layout.addWidget(self.label_name)
@@ -150,6 +196,9 @@ class Artic(QWidget):
 
 сустав
 конгруэнтность суставных поверхностей +-
+
+
+
 сужение суставной щели (степень сужение - легкое/сомнительное, умеренное, выраженное, резкое) равномерно/неравномерно по внутрен 
                                                                                                        нар передн задней поверхности
 субхондральные изменения (субхондрального слоя) (нормальная, остеопороз, остеосклероз, деструкция, дефекты суставных 
