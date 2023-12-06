@@ -82,36 +82,58 @@ class Artic(QWidget):
 
         #сужение суставной щели (степень сужение - легкое/сомнительное, умеренное, выраженное, резкое) 
         #                        равномерно/неравномерно по внутрен нар передн задней поверхности
+
         joint_space_layout = QHBoxLayout()
-        
         label_equability = QLabel("Равномерность щели сустава")
         self.equability = QPushButton("...")
         self.equability.setStyleSheet(self.button_style)
         equability_menu = QMenu(self)
         self.create_menu(["равномерна", "неравномерна"], equability_menu)
-        self.equability.setMenu(congruent_menu)
+        self.equability.setMenu(equability_menu)
         equability_menu.triggered.connect(lambda action:self.equability.setText(action.text()))
-
 
         label_narrowing =  QLabel("Сужение щели сустава")
         self.narrowing = QPushButton("...")
         self.narrowing.setStyleSheet(self.button_style)
         narrowing_menu = QMenu(self)
         self.create_menu(["легкое(сомнительное)", "умеренное", "выраженное", "резкое"], narrowing_menu)
-        self.narrowing.setMenu(congruent_menu)
+        self.narrowing.setMenu(narrowing_menu)
         narrowing_menu.triggered.connect(lambda action:self.narrowing.setText(action.text()))
+
         joint_space_layout.addWidget(label_narrowing)
-        
         joint_space_layout.addWidget(self.narrowing)
         joint_space_layout.addWidget(label_equability)
         joint_space_layout.addWidget(self.equability)
 
-
+        
 
         #субхондральные изменения (субхондрального слоя) (нормальная, остеопороз, остеосклероз, деструкция, дефекты суставных 
         #                                         поверхностей, секвестрация, кистовидная перестройка (количество, 
         #                                         величина), неровный контур, дефигурация - уплощение суставной поверхности).
-        
+        sub_chondalis_layout = QHBoxLayout()
+        label_subchondralis = QLabel("Субхондральные изменения")
+        self.subchondralis = QPushButton("...")
+        self.subchondralis.setStyleSheet(self.button_style)
+        subchondralis_menu = QMenu(self)
+        subchondralis_variants = [
+                        "нет", 
+                        "остеопороз", 
+                        "остеосклероз", 
+                        "деструкция", 
+                        "дефекты суставных", 
+                        "неровный контур",
+                        ]
+        self.create_menu(subchondralis_variants ,subchondralis_menu)
+        self.subchondralis.setMenu(subchondralis_menu)
+        subchondralis_menu.triggered.connect(lambda action:self.subchondralis.setText(action.text()))
+        sub_chondalis_layout.addWidget(label_subchondralis)
+        sub_chondalis_layout.addWidget(self.subchondralis)
+
+        self.zones = 
+
+
+
+
         #краевые разрастания суставных поверхностей +- их размеры
         
         #очаги остеосклероза +-
@@ -130,6 +152,8 @@ class Artic(QWidget):
         self.main_layout = QVBoxLayout()
         self.main_layout.addWidget(self.label_name)
         self.main_layout.addLayout(congr_layout)
+
+        self.main_layout.addLayout(joint_space_layout)
         
         self.setLayout(self.main_layout)
 

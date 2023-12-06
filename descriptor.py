@@ -174,14 +174,14 @@ class Descriptor(QWidget):
         #print(rent_zones.index(action.text()))
         #print(rent_zones_bone_loc[action.text()])
         print("joints", rent_zones_bone_loc[action.text()][0])
-        #print("localization", rent_zones_bone_loc[action.text()][1])
+        print("localization", rent_zones_bone_loc[action.text()][1])
         print("segments", rent_zones_bone_loc[action.text()][2])
         
 
 
 
         if len(rent_zones_bone_loc[action.text()][0])>0:
-            for i in rent_zones_bone_loc[action.text()][0]:
+            for i in rent_zones_bone_loc[action.text()][0].keys():
                 self.button_joint = PushButton("Описание "+i)
                 self.button_joint.name = i
                 self.button_joint.setStyleSheet(self.button_style) 
